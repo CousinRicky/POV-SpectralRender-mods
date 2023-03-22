@@ -2,15 +2,17 @@
 
 Ive of LILYsoft has developed [SpectralRender](https://www.lilysoft.org/CGI/SR/Spectral%20Render.htm), a spectral rendering engine for [POV-Ray](https://www.povray.org/).
 
-I have made two sets of modifications to one of the files, namely `SpectralComposer.pov`. Since the project has recently been “un-licensed,” I am now publishing my modifications.
+I have made three sets of modifications to one of the files, namely `SpectralComposer.pov`. Since the project has recently been “un-licensed,” I am now publishing my modifications.
 
 1. I first converted it to a proper include file. In its standard form, `SpectralComposer.pov` must be edited every time you create a new scene, or even render the same scene with different parameters; and the final output image must be renamed. With my changes, you can `#include` the composer file in your scene description file, and `#declare` the scene name and other parameters in your scene description file, in an INI file, or on the command line. There will be no need to edit the composer file or rename the output image.
 
 2. I then implemented gamut mapping to deal with colors that are too rich for the color systems supported by SpectralRender.
 
-File **`SpectralComposer.inc`** has only the parameter upgrade.
+3. White points are accepted as low as 2000 K. Values for `Whitepoint` less than 4000 will use the black body white; 4000 and above will use the daylight white.
 
-File **`SpectralComposer-gm2.inc`** has both the parameter upgrade and the gamut mapping.
+File **`SpectralComposer.inc`** has only the parameter and white point upgrades.
+
+File **`SpectralComposer-gm2.inc`** has all three upgrades, including the gamut mapping.
 
 Only these two files are included in this repository. For the full project and documentation, please visit the [SpectralRender download page](https://www.lilysoft.org/CGI/SR/Spectral%20Render.htm).
 

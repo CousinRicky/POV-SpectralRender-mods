@@ -4,11 +4,12 @@
 // Ive, September 2013
 //
 //================================================================================
-// Modifications by Richard Callwood III:
+// Modified version RC3-0.22-2 (gamut mapping) by Richard Callwood III:
 // 2013-Nov-26  Converted to parameter-driven .inc file.
 // 2013-Nov-26  Converted npow() to NPow().
 // 2013-Dec-02  Does gamut mapping (CIE.inc's method 2).
 // 2013-Dec-11  Corrected a grammatical error.
+// 2023-Mar-21  White points are accepted down to 2000 K.
 
 #version 3.7;        
 
@@ -95,7 +96,7 @@ global_settings { assumed_gamma 1 }
 
 #include "CIE.inc" 
 
-#debug "\n*****  Spectral Composer  *****\n"
+#debug "\n*****  Spectral Composer (gamut mapping)  *****\n"
 
 
 //================================================================================
@@ -132,15 +133,21 @@ global_settings { assumed_gamma 1 }
 
 #if (Use_AdobeRGB | (Whitepoint != 6504))
 
-  #local WP = min(max(4000,Whitepoint),20000);
+  #local WP = min(max(2000,Whitepoint),20000);
   
- #if (!Use_AdobeRGB)
-  CIE_ColorSystemWhitepoint(sRGB_ColSys, Daylight2Whitepoint(WP))
-  #debug "using sRGB primaries with whitepoint D "
- #else
+ #if (Use_AdobeRGB & WP < 4000)
+  CIE_ColorSystemWhitepoint(Adobe_ColSys, Blackbody2Whitepoint(WP))
+  #debug "using AdobeRGB primaries with whitepoint "
+ #elseif (Use_AdobeRGB)
   CIE_ColorSystemWhitepoint(Adobe_ColSys, Daylight2Whitepoint(WP))
   #debug "using AdobeRGB primaries with whitepoint D "
- #end 
+ #elseif (WP < 4000)
+  CIE_ColorSystemWhitepoint(sRGB_ColSys, Blackbody2Whitepoint(WP))
+  #debug "using sRGB primaries with whitepoint "
+ #else
+  CIE_ColorSystemWhitepoint(sRGB_ColSys, Daylight2Whitepoint(WP))
+  #debug "using sRGB primaries with whitepoint D "
+ #end
  
  #debug str(WP,4,0) #debug "K"
 
